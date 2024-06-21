@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <div class="mb-3">
-      <input v-model="searchQuery" @input="fetchCountriesByName" class="form-control"
-        placeholder="Search for a country" />
+      <input v-model="searchQuery" @input="callFetching" class="form-control" placeholder="Search for a country" />
     </div>
+
     <div v-if="loading" class="text-center my-5">
       <div class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -18,11 +18,16 @@
           <div class="card h-100">
             <img v-if="country.image" :src="country.image" :alt="country.name" class="card-img-top" />
             <div class="card-body">
-              <h5 class="card-title">{{ country.name }}</h5>
-              <p class="card-text">{{ country.continent.name }}</p>
+              <div class="d-flex flex-column justify-content-start align-items-start mb-2">
+                <h5 class="card-title">
+                  <img :src="country.flagImage" class="card-flag-img" /> {{ country.name }}
+                </h5>
+                <p class="card-text">
+                  <i class="fas fa-globe"></i> {{ country.continent.name }}
+                </p>
+              </div>
 
               <CountryModal :countryData="country" :modal-id="country.code" />
-
             </div>
           </div>
         </div>
@@ -62,7 +67,7 @@ export default defineComponent({
     const page = ref(1);
     const itemsPerPage = 10;
 
-    const fetchCountriesByName = async () => {
+    const callFetching = async () => {
       loading.value = true;
       error.value = false;
       try {
@@ -77,19 +82,19 @@ export default defineComponent({
 
     const nextPage = () => {
       page.value++;
-      fetchCountriesByName();
+      callFetching();
     };
 
     const previousPage = () => {
       if (page.value > 1) {
         page.value--;
-        fetchCountriesByName();
+        callFetching();
       }
     };
 
-    watch([searchQuery, page], fetchCountriesByName);
+    watch([searchQuery, page], callFetching);
 
-    fetchCountriesByName();
+    callFetching();
 
     return {
       countries,
@@ -100,13 +105,13 @@ export default defineComponent({
       itemsPerPage,
       nextPage,
       previousPage,
-      fetchCountriesByName,
+      callFetching,
     };
   },
 });
 </script>
 
-<style scoped>
+<style lang="scss"  scoped>
 .country-card {
   border: 1px solid #ccc;
   padding: 16px;
@@ -116,5 +121,10 @@ export default defineComponent({
 .pagination {
   display: flex;
   justify-content: space-between;
+}
+
+.card-flag-img {
+  width: 60px;
+  margin-right: 20px;
 }
 </style>

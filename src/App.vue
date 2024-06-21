@@ -11,5 +11,3 @@ import SidebarComponent from '@/components/ResponsiveSidebar.vue'
 
 
 </script>
-
-<style scoped></style>

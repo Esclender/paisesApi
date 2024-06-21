@@ -1,14 +1,16 @@
 import apolloClient from '@/api/graphql/apollo/apolloClient';
 import { GET_COUNTRIES, GET_COUNTRY_DATA } from '@/api/graphql/queries';
-import { fetchCountryImage } from './pixabayService';
+import { fetchCountryFlagImage, fetchCountryImage } from './pixabayService';
 import { type ICountryDataInfo } from '@/api/types';
 
 const fetchCountryImages = async (countries: ICountryDataInfo[]): Promise<ICountryDataInfo[]> => {
   return Promise.all(
     countries.map(async (country: ICountryDataInfo) => {
       const image = await fetchCountryImage(country.name, country.capital);
+      const imageFlag = await fetchCountryFlagImage(country.name, country.capital);
       return {
         ...country,
+        flagImage: imageFlag,
         image,
       };
     })
