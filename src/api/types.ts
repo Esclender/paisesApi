@@ -13,7 +13,7 @@ export interface ICountryDataInfo {
   continent: {
     name: string;
   };
-  image?: string;
+  image: string;
 }
 
 export interface Country {
