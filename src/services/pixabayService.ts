@@ -1,4 +1,5 @@
 import axiosInstance from '@/api/axiosInstance'
+import type { IContinentDataInfo, ICountryDataInfo } from '@/api/types';
 
 const PIXABAY_BASE_URL = 'https://pixabay.com/api/';
 const PIXABAY_API_KEY = import.meta.env.VITE_PIXABAY_API_KEY;
@@ -6,26 +7,26 @@ const PIXABAY_API_KEY = import.meta.env.VITE_PIXABAY_API_KEY;
 
 const imageCache: { [key: string]: string } = {};
 
-export const fetchCountryImage = async (countryName: string, capital: string): Promise<string> => {
+const fetchImage = async (name: string, area: string): Promise<string> => {
 
-  if (imageCache[countryName]) {
-    return imageCache[countryName];
+  if (imageCache[name]) {
+    return imageCache[name];
   }
 
   const fullUrl = `${PIXABAY_BASE_URL}?key=${PIXABAY_API_KEY}` 
-                + `&q=${encodeURIComponent(countryName + ' Country')}`
+                + `&q=${encodeURIComponent(name + ' ' + area)}`
                 + '&image_type=photo'
                 + '&orientation=horizontal'
                 + '&category=places'
                 + '&per_page=3'
 
-
+  console.log('fullUrl:', fullUrl);
   try {
     const response = await axiosInstance.get(fullUrl);
     const images = response.data.hits;
     const imageUrl = images.length > 0 ? images[0].webformatURL : '';
 
-    imageCache[countryName] = imageUrl;
+    imageCache[name] = imageUrl;
 
     return imageUrl;
   } catch (err) {
@@ -37,7 +38,7 @@ export const fetchCountryImage = async (countryName: string, capital: string): P
 const imageFlagCache: { [key: string]: string } = {};
 
 
-export const fetchCountryFlagImage = async (countryName: string, capital: string): Promise<string> => {
+const fetchCountryFlagImage = async (countryName: string): Promise<string> => {
 
   if (imageFlagCache[countryName]) {
     return imageFlagCache[countryName];
@@ -63,3 +64,28 @@ export const fetchCountryFlagImage = async (countryName: string, capital: string
   }
 };
 
+export const fetchCountryImages = async (countries: ICountryDataInfo[]): Promise<ICountryDataInfo[]> => {
+  return Promise.all(
+    countries.map(async (country: ICountryDataInfo) => {
+      const image = await fetchImage(country.name, 'Country');
+      const imageFlag = await fetchCountryFlagImage(country.name);
+      return {
+        ...country,
+        flagImage: imageFlag,
+        image,
+      };
+    })
+  );
+};
+
+export const fetchContinentImages = async (continents: IContinentDataInfo[]): Promise<IContinentDataInfo[]> => {
+  return Promise.all(
+    continents.map(async (continent: IContinentDataInfo) => {
+      // const image = await fetchImage(continent.name, 'Blue+Map');
+      return {
+        ...continent,
+        image: 'assets/' + continent.name + '.png',
+      };
+    })
+  );
+};

@@ -2,6 +2,10 @@ export interface CountriesData {
   countries: ICountryDataInfo[];
 }
 
+export interface ContinentsData {
+  continents: IContinentDataInfo[];
+}
+
 export interface CountryData {
   country: ICountryDataInfo;
 }
@@ -9,9 +13,7 @@ export interface CountryData {
 export interface Country {
   name: string;
   code: string;
-  continent: {
-    name: string;
-  };
+  continent: Continent;
 }
 
 export interface ICountryDataInfo {
@@ -26,6 +28,13 @@ export interface ICountryDataInfo {
   image: string;
   flagImage: string;
 }
+
+export interface IContinentDataInfo {
+  name: string;
+  code: string;
+  image: string;
+}
+
 
 export interface Continent {
   name: string;

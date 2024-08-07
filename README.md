@@ -1,61 +1,76 @@
-# PaisesApp
 
-This template should help get you started developing with Vue 3 in Vite.
+## Paises App
 
-## Recommended IDE Setup
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Type Support for `.vue` Imports in TS
+![Logo](/assets/LOGOTIPO.png)
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
 
-## Customize configuration
+## API Reference
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+Todos los endpoints deben comenzar con **/api** al principio del endpoint, referencia 👇
 
-## Project Setup
+#### Get unique artesano
 
-```sh
-npm install
+```http
+  GET /api/artesano
 ```
 
-### Compile and Hot-Reload for Development
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `tokenAccesso` | `string` | **Required**. Your JWT |
 
-```sh
-npm run dev
+
+Estructura de Carpetas
+============================
+
+> Convencion utlizada para las diferentes carpetas, Tomando como referencia los principios de **Clean Architecture**.
+
+### Estructure a nivel de desarrollo (Nivel de carpeta Src)
+
+    .
+    ├── src                  
+    │   ├── api
+    │   │   ├── graphql       # Contiene todos los archivos relacionados con graphos
+    │   │   |   ├──  apollo   # Contiene el cliente de Apollo
+    |   |   |   └──  queries  #
+    │   ├── assets          # 
+    │   ├── components      #
+    │   ├── router          #
+    │   ├── services        #
+    │   └── views           # 
+
+
+
+
+
+
+## Environment Variables
+
+Se ha facilitado un archivo .env.development en cual contendra las variables necesarias para desplegar la app en desarrollo.
+
+
+`VITE_API_URI`
+
+`VITE_PIXABAY_API_KEY`
+
+
+## Deployment
+
+Para desplegar este proyecto en desarrollo, utiliza:
+
+```bash
+  npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+## Tech Stack
 
-```sh
-npm run build
-```
+Vue 3, Typescript, CSS, Boostrap
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+## System Requiremnts
 
-```sh
-npm run test:unit
-```
+**Node Js** >= 20.11.1 (Utilizada para la construccion del proyecto) 
 
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
 
-```sh
-npm run test:e2e:dev
-```
 
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
-
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
-
-```sh
-npm run build
-npm run test:e2e
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```

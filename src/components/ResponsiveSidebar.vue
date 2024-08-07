@@ -1,11 +1,12 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid p-0">
     <nav class="navbar navbar-expand-lg navbar-light ">
-      <div class="container-fluid">
+      <div class="container-fluid ">
         <button class="navbar-toggler shadow-none d-lg-block" type="button" @click="toggleSidebar" aria-expanded="false"
           aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
+
       </div>
     </nav>
 
@@ -20,10 +21,11 @@
         <div class="offcanvas-body">
           <ul class="list-group">
             <li class="btn  btn-primary ">
-              <RouterLink @click.native="hideSidebar" to="/"><i class="fas fa-globe"></i> Paises</RouterLink>
+              <RouterLink class="d-block" @click="hideSidebar" to="/"><i class="fas fa-globe"></i> Paises</RouterLink>
             </li>
             <li class="btn btn-primary ">
-              <RouterLink @click.native="hideSidebar" to="/vistaone"><i class="fas fa-eye"></i> Vista 1</RouterLink>
+              <RouterLink class="d-block" @click="hideSidebar" to="/vistaone"><i class="fas fa-eye"></i> Vista 1
+              </RouterLink>
             </li>
           </ul>
         </div>

@@ -1,5 +1,7 @@
 <template>
-  <CountryList />
+  <div class="container-fluid">
+    <CountryList />
+  </div>
 </template>
 
 <script lang="ts">

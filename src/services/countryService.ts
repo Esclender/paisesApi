@@ -1,27 +1,27 @@
 import apolloClient from '@/api/graphql/apollo/apolloClient';
 import { GET_COUNTRIES, GET_COUNTRY_DATA } from '@/api/graphql/queries';
-import { fetchCountryFlagImage, fetchCountryImage } from './pixabayService';
+import { fetchCountryImages } from './pixabayService';
 import { type ICountryDataInfo } from '@/api/types';
 
-const fetchCountryImages = async (countries: ICountryDataInfo[]): Promise<ICountryDataInfo[]> => {
-  return Promise.all(
-    countries.map(async (country: ICountryDataInfo) => {
-      const image = await fetchCountryImage(country.name, country.capital);
-      const imageFlag = await fetchCountryFlagImage(country.name, country.capital);
-      return {
-        ...country,
-        flagImage: imageFlag,
-        image,
-      };
-    })
-  );
-};
+const countriesCache: { [key: string]: ICountryDataInfo[] } = {};
+const countryCache: { [key: string]: ICountryDataInfo } = {};
 
-export const fetchCountries = async (name: string, page: number, itemsPerPage: number): Promise<ICountryDataInfo[]> => {
+
+
+export const fetchCountries = async ( 
+  page: number, 
+  itemsPerPage: number, 
+  {continent = '', name=''}: {continent: string, name: string,} 
+): Promise<ICountryDataInfo[]> => {
+  const cacheKey = `${name}-${page}-${itemsPerPage}-${continent}`;
+  if (countriesCache[cacheKey]) {
+    return countriesCache[cacheKey];
+  }
+
   try {
     const { data } = await apolloClient.query({
       query: GET_COUNTRIES,
-      variables: {name: name}
+      variables: { name: name, continent: continent }
     });
 
     const startIndex = (page - 1) * itemsPerPage;
@@ -29,6 +29,7 @@ export const fetchCountries = async (name: string, page: number, itemsPerPage: n
     const countriesPage = data.countries.slice(startIndex, endIndex);
 
     const countriesWithImages = await fetchCountryImages(countriesPage);
+    countriesCache[cacheKey] = countriesWithImages;
     return countriesWithImages;
   } catch (err) {
     console.error('Error fetching countries:', err);
@@ -37,22 +38,22 @@ export const fetchCountries = async (name: string, page: number, itemsPerPage: n
 };
 
 export const fetchCountry = async (code: string): Promise<ICountryDataInfo> => {
+  if (countryCache[code]) {
+    return countryCache[code];
+  }
+
   try {
     const { data } = await apolloClient.query({
       query: GET_COUNTRY_DATA,
-      variables: {code: code}
+      variables: { code: code }
     });
 
-    console.log(data)
-
-
-    const countryImage = await fetchCountryImage(data.country.name, data.country.capital);
-    return {
-      ...data.country,
-      image: countryImage,
-    };
+    const countryWithImages = await fetchCountryImages([data.country]);
+    const country = countryWithImages[0];
+    countryCache[code] = country;
+    return country;
   } catch (err) {
-    console.error('Error fetching countries:', err);
+    console.error('Error fetching country:', err);
     throw err;
   }
 };

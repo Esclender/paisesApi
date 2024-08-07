@@ -1,7 +1,7 @@
 <template>
-  <SidebarComponent />
 
-  <main class="m-2 d-flex justify-content-center align-items-center ">
+  <main class="m-2 d-flex flex-column justify-content-center align-items-center ">
+    <SidebarComponent />
     <RouterView />
   </main>
 </template>
