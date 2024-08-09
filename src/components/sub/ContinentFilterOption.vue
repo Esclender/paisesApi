@@ -35,7 +35,6 @@ export default defineComponent({
     };
 
     return {
-
       continent: props.continentProp,
       isActive,
       saveFilter

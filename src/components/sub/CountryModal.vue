@@ -13,6 +13,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+
           <div v-if="countryData">
             <img :src="countryData.image" alt="Country Image" class="img-fluid mb-3" />
             <p><strong><i class="fas fa-building"></i> Capital:</strong> {{ countryData.capital }}</p>
@@ -42,11 +43,11 @@ import { type ICountryDataInfo } from '@/api/types'
 export default defineComponent({
   name: 'CountryModal',
   props: {
-    countryData: {
+    countryDataProp: {
       type: Object as PropType<ICountryDataInfo>,
       required: true,
     },
-    modalId: {
+    modalIdProp: {
       type: String,
       required: true,
     },
@@ -55,8 +56,8 @@ export default defineComponent({
 
 
     return {
-      countryData: props.countryData,
-      modalId: props.modalId
+      countryData: props.countryDataProp,
+      modalId: props.modalIdProp
     };
 
   },

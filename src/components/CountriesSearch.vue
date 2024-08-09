@@ -1,13 +1,13 @@
 <template>
   <div class="mb-3 d-flex">
-    <input v-model="inputValue" ref="inputRef" @input="callUpdateSearchQuery" @focus="showModal" @blur="handleBlur"
+    <input v-model="inputValue" @input="callUpdateSearchQuery" @focus="showModal" @blur="handleBlur"
       @keydown="handleKeydown" class="form-control" placeholder="Search for a country" />
   </div>
 
-  <div :class="{ 'd-none': !isModalVisible }" class="card custom-modal">
+  <div :key="cleanedVersion" :class="{ 'd-none': !isModalVisible }" class="card custom-modal">
     <div class="card-header d-flex justify-content-between">
       <h5 class="fw-medium">Filtrar por Continente</h5>
-      <button type="button" class="text-decoration-underline">Limpiar</button>
+      <button type="button" class="text-decoration-underline" @click="clearFilter">Limpiar</button>
     </div>
     <div class="card-body grid">
       <ContinentFilterOption v-for="continent in continentOptions" :key="continent.code" :continentProp="continent"
@@ -43,12 +43,17 @@ export default defineComponent({
     updateContinentFilter: {
       type: Function,
       required: true
+    },
+    cleanFilterProp: {
+      type: Function,
+      required: true
     }
   },
   setup(props) {
     const continentOptions: Ref<IContinentDataInfo[]> = ref([]);
     const isModalVisible = ref(false);
     const isEnterPressed = ref(false);
+    const cleanedVersion = ref(0);
     const inputValue = ref(props.searchQuery);
     const inputRef: Ref<VNodeRef | undefined> = ref(undefined);
 
@@ -99,17 +104,24 @@ export default defineComponent({
       }
     };
 
+    const clearFilter = () => {
+      cleanedVersion.value++;
+      props.cleanFilterProp();
+    };
+
     onMounted(() => {
       callFetchingContinents();
     });
 
     return {
+      callFetchingContinentsBySearch,
       callUpdateSearchQuery,
+      clearFilter,
       showModal,
       hideModal,
-      callFetchingContinentsBySearch,
       handleKeydown,
       handleBlur,
+      cleanedVersion,
       isModalVisible,
       continentOptions,
       inputValue,

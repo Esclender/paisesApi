@@ -1,6 +1,6 @@
 <template>
   <CountriesSearch :searchQuery="searchQuery" :updateSearchQuery="updateSearchQuery"
-    :updateContinentFilter="updateContinentFilter" />
+    :updateContinentFilter="updateContinentFilter" :cleanFilterProp="cleanFilter" />
 
   <div v-if="loading" class="text-center my-5">
     <div class="spinner-border align-center" role="status">
@@ -25,7 +25,7 @@
               </p>
             </div>
 
-            <CountryModal :countryData="country" :modal-id="country.code" />
+            <CountryModal :countryDataProp="country" :modalIdProp="country.code" />
           </div>
         </div>
       </div>
@@ -121,6 +121,11 @@ export default defineComponent({
       page.value = 1;
     };
 
+    const cleanFilter = () => {
+      continentFilterCodes.value = [];
+      page.value = 1;
+    };
+
 
     watch([searchQuery, continentFilterCodes, page], callFetching);
 
@@ -135,6 +140,7 @@ export default defineComponent({
       itemsPerPage,
       nextPage,
       previousPage,
+      cleanFilter,
       updateSearchQuery,
       updateContinentFilter
     };
