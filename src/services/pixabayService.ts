@@ -7,14 +7,14 @@ const PIXABAY_API_KEY = import.meta.env.VITE_PIXABAY_API_KEY;
 
 const imageCache: { [key: string]: string } = {};
 
-const fetchImage = async (name: string, area: string): Promise<string> => {
+const fetchImage = async (name: string, area: string, keyword:string): Promise<string> => {
 
   if (imageCache[name]) {
     return imageCache[name];
   }
 
   const fullUrl = `${PIXABAY_BASE_URL}?key=${PIXABAY_API_KEY}` 
-                + `&q=${encodeURIComponent(name + ' ' + area)}`
+                + `&q=${area + '+' + name+ '+' + keyword}`
                 + '&image_type=photo'
                 + '&orientation=horizontal'
                 + '&category=places'
@@ -67,7 +67,7 @@ const fetchCountryFlagImage = async (countryName: string): Promise<string> => {
 export const fetchCountryImages = async (countries: ICountryDataInfo[]): Promise<ICountryDataInfo[]> => {
   return Promise.all(
     countries.map(async (country: ICountryDataInfo) => {
-      const image = await fetchImage(country.name, 'Country');
+      const image = await fetchImage(country.name, 'Country', 'city');
       const imageFlag = await fetchCountryFlagImage(country.name);
       return {
         ...country,

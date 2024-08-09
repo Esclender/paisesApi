@@ -25,8 +25,12 @@ export default defineComponent({
   setup(props) {
     const isActive = ref(false);
 
+    const toogleActive = () => {
+      isActive.value = !isActive.value;
+    };
+
     const saveFilter = (code: string) => {
-      isActive.value = true;
+      toogleActive()
       props.saveFilterCodeProp(code);
     };
 

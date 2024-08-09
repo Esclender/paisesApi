@@ -73,17 +73,16 @@ export default defineComponent({
       try {
         if (continentFilterCodes.value.length === 0) {
           countries.value = await fetchCountries(page.value, itemsPerPage, { name: searchQuery.value, continent: '' });
+          return;
         }
-        continentFilterCodes.value.forEach(async (code) => {
+        const regexCode = `^(${continentFilterCodes.value.join('|')})$`;
 
-          const response = await fetchCountries(
-            page.value,
-            itemsPerPage,
-            { name: searchQuery.value, continent: code }
-          );
+        countries.value = await fetchCountries(
+          page.value,
+          itemsPerPage,
+          { name: searchQuery.value, continent: regexCode }
+        );
 
-          countries.value = [...response, ...countries.value];
-        });
       } catch (err) {
         console.error(err);
         error.value = true;
@@ -112,6 +111,12 @@ export default defineComponent({
 
 
     const updateContinentFilter = (code: string) => {
+      if (continentFilterCodes.value.includes(code)) {
+        continentFilterCodes.value = continentFilterCodes.value.filter((c) => c !== code);
+        page.value = 1;
+        return;
+      }
+
       continentFilterCodes.value = [...continentFilterCodes.value, code];
       page.value = 1;
     };
@@ -138,10 +143,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.country-card {
-  border: 1px solid #ccc;
-  padding: 16px;
-  margin-bottom: 16px;
+.card {
+  .card-img-top {
+    height: 70%;
+    object-fit: cover;
+  }
 }
 
 .pagination {

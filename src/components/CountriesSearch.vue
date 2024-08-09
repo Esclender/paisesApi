@@ -1,6 +1,6 @@
 <template>
   <div class="mb-3 d-flex">
-    <input :value="searchQuery" @input="callUpdateSearchQuery" @focus="showModal" @blur="handleBlur"
+    <input v-model="inputValue" ref="inputRef" @input="callUpdateSearchQuery" @focus="showModal" @blur="handleBlur"
       @keydown="handleKeydown" class="form-control" placeholder="Search for a country" />
   </div>
 
@@ -22,7 +22,7 @@
 import type { IContinentDataInfo } from '@/api/types';
 
 import { fetchContinents } from '@/services/continentService';
-import { defineComponent, onMounted, ref, type Ref } from 'vue';
+import { defineComponent, onMounted, ref, type Ref, type VNodeRef } from 'vue';
 
 import ContinentFilterOption from './sub/ContinentFilterOption.vue';
 
@@ -49,15 +49,25 @@ export default defineComponent({
     const continentOptions: Ref<IContinentDataInfo[]> = ref([]);
     const isModalVisible = ref(false);
     const isEnterPressed = ref(false);
+    const inputValue = ref(props.searchQuery);
+    const inputRef: Ref<VNodeRef | undefined> = ref(undefined);
 
 
-    const callFetching = async () => {
+    const callFetchingContinents = async () => {
       continentOptions.value = (await fetchContinents()).continents;
     };
 
-    const callFetchingBySearch = async (code: string) => {
-      hideModal()
+    const callFetchingContinentsBySearch = async (code: string) => {
+      hideModal();
+      blurInput()
       props.updateContinentFilter(code);
+    };
+
+    const blurInput = () => {
+      const inputElement = inputRef.value as HTMLInputElement | undefined;
+      if (inputElement) {
+        inputElement.blur();
+      }
     };
 
     const callUpdateSearchQuery = (event: any) => {
@@ -90,18 +100,20 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      callFetching();
+      callFetchingContinents();
     });
 
     return {
       callUpdateSearchQuery,
       showModal,
       hideModal,
-      callFetchingBySearch,
+      callFetchingContinentsBySearch,
       handleKeydown,
       handleBlur,
       isModalVisible,
       continentOptions,
+      inputValue,
+      inputRef
     };
   }
 });
